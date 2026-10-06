@@ -6,30 +6,42 @@
 <title>CaesarBase</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:#0a0a14;color:#e6e6f0;min-height:100vh;overflow:hidden;transition:all .6s ease}
-body.loading{filter:blur(8px);opacity:.3;transform:translateX(-40px)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:#0a0a14;color:#e6e6f0;min-height:100vh}
 canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:20px 32px}
 .topbar .logo{font-size:20px;font-weight:700;color:#50fa7b;letter-spacing:1px}
 .enter-btn{background:linear-gradient(135deg,#50fa7b,#8be9fd);color:#0a0a14;border:none;padding:10px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s}
 .enter-btn:hover{transform:scale(1.05)}
-.center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px;transition:all .6s ease}
+/* 主内容区 */
+.center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px;transition:opacity .5s ease, filter .5s ease}
 .center h1{font-size:72px;font-weight:900;background:linear-gradient(135deg,#50fa7b,#8be9fd,#bd93f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-2px;margin-bottom:16px}
 .center .sub{font-size:18px;color:#6272a4;margin-bottom:8px}
 .center .tags{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .center .tags span{padding:6px 16px;border:1px solid #2a2a4a;border-radius:20px;font-size:13px;color:#8be9fd}
-/* 加载动画 */
-.loader-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(10,10,20,.5);backdrop-filter:blur(12px)}
+/* 功能介绍两列 */
+.features{max-width:700px;margin:50px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:20px;text-align:left}
+.feat{background:rgba(26,26,46,.6);border:1px solid #2a2a4a;border-radius:14px;padding:22px}
+.feat h3{font-size:16px;margin-bottom:8px;color:#8be9fd}
+.feat p{font-size:13px;color:#6272a4;line-height:1.6}
+/* 赞助区 */
+.sponsor{margin-top:50px;padding-top:30px;border-top:1px solid #2a2a4a;width:100%;max-width:600px}
+.sponsor .label{font-size:12px;color:#6272a4;margin-bottom:12px}
+.sponsor-logos{display:flex;gap:20px;justify-content:center;align-items:center;flex-wrap:wrap;min-height:40px}
+.sponsor-logos .placeholder{color:#3a3a5a;font-size:12px}
+/* 加载遮罩 */
+.loader-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;display:none;align-items:center;justify-content:center;pointer-events:none}
 .loader-overlay.show{display:flex}
-.loader-ring{width:100px;height:100px;position:relative}
+.loader-ring{width:90px;height:90px;position:relative}
 .loader-ring svg{width:100%;height:100%;animation:spin 1.2s linear infinite}
 .loader-ring circle{fill:none;stroke-width:6;stroke-linecap:round}
 .loader-ring .bg{stroke:#2a2a4a}
 .loader-ring .fg{stroke:url(#grad);stroke-dasharray:200;stroke-dashoffset:60;animation:dash 1.5s ease-in-out infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes dash{0%{stroke-dashoffset:180}50%{stroke-dashoffset:40}100%{stroke-dashoffset:180}}
-.loader-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:#8be9fd;white-space:nowrap}
-@media(max-width:600px){.center h1{font-size:44px}.topbar{padding:16px 20px}}
+.loader-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;color:#8be9fd;white-space:nowrap}
+/* 加载时主内容变淡 */
+.center.fading{opacity:.15;filter:blur(4px)}
+@media(max-width:600px){.center h1{font-size:44px}.topbar{padding:16px 20px}.features{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -47,8 +59,31 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
     <span>📝 技术文章</span>
     <span>⚾ 青少年棒球</span>
   </div>
+  <div class="features">
+    <div class="feat">
+      <h3>🧰 Cr工具站</h3>
+      <p>域名查找、编码转换、文件转换、二维码生成，全部免费在线使用，打开即用。</p>
+    </div>
+    <div class="feat">
+      <h3>📝 技术文章库</h3>
+      <p>96篇深度技术文章，覆盖前端、后端、全栈开发，从入门到实战。</p>
+    </div>
+    <div class="feat">
+      <h3>📢 品牌导流合作</h3>
+      <p>广告位招商，双站曝光，适合青少年体育、教育科技类品牌合作。</p>
+    </div>
+    <div class="feat">
+      <h3>💬 用户社区</h3>
+      <p>留言墙、弹幕互动、用户系统，和站长直接交流。</p>
+    </div>
+  </div>
+  <div class="sponsor">
+    <div class="label">赞助支持</div>
+    <div class="sponsor-logos">
+      <span class="placeholder">（赞助商标识位 · 敬请期待）</span>
+    </div>
+  </div>
 </div>
-<!-- 加载动画 -->
 <div class="loader-overlay" id="loader">
   <div class="loader-ring">
     <svg viewBox="0 0 100 100">
@@ -68,10 +103,10 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 const c=document.getElementById('c'),x=c.getContext('2d');
 let s=[];
 function rz(){c.width=innerWidth;c.height=innerHeight;s=[];for(let i=0;i<100;i++)s.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*2,vy:Math.random()*1.5+.5,l:Math.random()*60+20,a:Math.random()*.4+.15})}
-function dr(){x.clearRect(0,0,c.width,c.height);s.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y>c.height+50){p.y=-50;p.x=Math.random()*c.width}const g=x.createLinearGradient(p.x,p.y,p.x-p.vx*p.l,p.y-p.vy*p.l);g.addColorStop(0,`rgba(139,242,253,${p.a})`);g.addColorStop(1,'rgba(139,242,253,0)');x.strokeStyle=g;x.lineWidth=1.5;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x-p.vx*p.l,p.y-p.vy*s.vy*s.l);x.stroke()});requestAnimationFrame(dr)}
+function dr(){x.clearRect(0,0,c.width,c.height);s.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y>c.height+50){p.y=-50;p.x=Math.random()*c.width}const g=x.createLinearGradient(p.x,p.y,p.x-p.vx*p.l,p.y-p.vy*p.l);g.addColorStop(0,`rgba(139,242,253,${p.a})`);g.addColorStop(1,'rgba(139,242,253,0)');x.strokeStyle=g;x.lineWidth=1.5;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x-p.vx*p.l,p.y-p.vy*p.l);x.stroke()});requestAnimationFrame(dr)}
 rz();dr();addEventListener('resize',rz)
 function enter(){
-  document.body.classList.add('loading');
+  document.getElementById('mainContent').classList.add('fading');
   document.getElementById('loader').classList.add('show');
   setTimeout(()=>{window.location.href='main.html'},1500);
 }
