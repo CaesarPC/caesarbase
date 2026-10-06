@@ -102,8 +102,8 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1}
 <script>
 const c=document.getElementById('c'),x=c.getContext('2d');
 let meteors=[];
-function rz(){c.width=innerWidth;c.height=innerHeight;meteors=[];for(let i=0;i<15;i++)spawnNow();spawn()}
-function spawnNow(){
+let spawnTimer=null;
+function makeMeteor(){
   const fromLeft=Math.random()<0.6;
   let sx,sy,vx,vy;
   if(fromLeft){
@@ -121,33 +121,19 @@ function spawnNow(){
   const sp=Math.hypot(vx,vy);
   meteors.push({x:sx,y:sy,vx:vx,vy:vy,size:1+sp*0.3,tail:20+sp*12,alpha:0.3+Math.random()*0.4});
 }
-function spawn(){
-  // 随机从左侧或顶部发射
-  const fromLeft=Math.random()<0.6; // 60%从左侧，40%从顶部
-  let sx,sy,vx,vy;
-  if(fromLeft){
-    sx=-30;
-    sy=Math.random()*c.height*0.7;
-    const angle=(44+Math.random()*2)*Math.PI/180; // 44-46度
-    const speed=3+Math.random()*5; // 速度3-8
-    vx=Math.cos(angle)*speed;
-    vy=Math.sin(angle)*speed;
-  }else{
-    sx=Math.random()*c.width*0.8;
-    sy=-30;
-    const angle=(44+Math.random()*2)*Math.PI/180;
-    const speed=3+Math.random()*5;
-    vx=Math.cos(angle)*speed;
-    vy=Math.sin(angle)*speed;
+function rz(){
+  c.width=innerWidth;c.height=innerHeight;
+  // 不清空已有流星，只调整画布尺寸
+  if(!spawnTimer){
+    // 初始spawm几个
+    for(let i=0;i<5;i++)makeMeteor();
+    // 开始循环发射
+    function loop(){
+      if(meteors.length<12)makeMeteor(); // 限制最多12颗
+      spawnTimer=setTimeout(loop,300+Math.random()*400);
+    }
+    loop();
   }
-  const speed=Math.hypot(vx,vy);
-  meteors.push({
-    x:sx,y:sy,vx:vx,vy:vy,
-    size:1+speed*0.3, // 快的大一点
-    tail:20+speed*12, // 快的尾巴长
-    alpha:0.3+Math.random()*0.4
-  });
-  setTimeout(spawn, 80+Math.random()*200);
 }
 function dr(){
   x.clearRect(0,0,c.width,c.height);
@@ -168,7 +154,7 @@ function dr(){
   });
   requestAnimationFrame(dr);
 }
-rz();dr();addEventListener('resize',rz)
+rz();dr();let rzT=null;addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{c.width=innerWidth;c.height=innerHeight},300)})
 
 // 圆环加载：一个条子一直在转
 const fg=document.getElementById('fgRing');
