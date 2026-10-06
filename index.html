@@ -94,7 +94,7 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1}
         </linearGradient>
       </defs>
       <circle class="bg" cx="50" cy="50" r="40"/>
-      <circle class="fg" id="fgRing" cx="50" cy="50" r="40" stroke-dasharray="60 191.2"/>
+      <circle class="fg" id="fgRing" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" transform="rotate(-90 50 50)"/>
     </svg>
     <div class="loader-text" id="loaderText">加载中</div>
   </div>
@@ -156,46 +156,33 @@ function dr(){
 }
 rz();dr();let rzT=null;addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{c.width=innerWidth;c.height=innerHeight},300)})
 
-// 圆环加载：一个条子一直在转
+// 圆环从9点钟方向慢慢长出来填满
 const fg=document.getElementById('fgRing');
 const CIRC=251.2;
-let rotTimer=null;
-function startSpin(){
-  let angle=0;
-  rotTimer=setInterval(()=>{
-    angle+=3;
-    fg.style.transform='rotate('+angle+'deg)';
-    fg.style.transformOrigin='50% 50%';
-  },20);
-}
-
 function enter(){
   document.getElementById('mainContent').classList.add('fading');
   document.getElementById('loader').classList.add('show');
   document.getElementById('loaderText').textContent='正在加载中';
-  startSpin();
-  // 2秒后开始收尾
-  setTimeout(()=>{
-    clearInterval(rotTimer);
-    // 0.5秒内圆环转完封闭，同时文字变成"加载完成"
-    document.getElementById('loaderText').textContent='加载完成';
-    // 圆环填满
-    let fill=0;
-    const fillTimer=setInterval(()=>{
-      fill+=2;
-      fg.style.strokeDashoffset=CIRC*(1-fill/100);
-      if(fill>=100){
-        clearInterval(fillTimer);
-        // 圆环封闭了，停留0.5秒展示
-        setTimeout(()=>{
-          // 0.09秒切回正常状态
-          document.getElementById('loader').classList.remove('show');
-          document.getElementById('mainContent').classList.remove('fading');
-          setTimeout(()=>{window.location.href='main.html'},90);
-        },500);
-      }
-    },10);
-  },2000);
+  // 从9点钟方向开始，0.3秒填满圆环
+  let fill=0;
+  const t0=performance.now();
+  function grow(now){
+    const p=(now-t0)/300; // 0.3秒
+    if(p>=1){
+      fg.style.strokeDashoffset=0;
+      document.getElementById('loaderText').textContent='加载完成';
+      // 停留后0.29秒还原跳转
+      setTimeout(()=>{
+        document.getElementById('loader').classList.remove('show');
+        document.getElementById('mainContent').classList.remove('fading');
+        setTimeout(()=>{window.location.href='main.html'},290);
+      },100);
+      return;
+    }
+    fg.style.strokeDashoffset=CIRC*(1-p);
+    requestAnimationFrame(grow);
+  }
+  requestAnimationFrame(grow);
 }
 </script>
 
