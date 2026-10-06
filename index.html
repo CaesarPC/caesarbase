@@ -7,12 +7,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:#0a0a14;color:#e6e6f0;min-height:100vh}
-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1}
 .topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:20px 32px}
 .topbar .logo{display:flex;align-items:center;gap:8px}
 .topbar .logo .name{font-size:20px;font-weight:700;color:#50fa7b;letter-spacing:1px}
 .topbar .logo .ver{font-size:12px;color:#3a3a5a;font-weight:400}
-.enter-btn{background:linear-gradient(135deg,#50fa7b,#8be9fd);color:#0a0a14;border:none;padding:10px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s}
+.enter-btn{background:linear-gradient(135deg,#50fa7b,#8be9fd);color:#0a0a14;border:none;padding:10px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s;z-index:101;position:relative}
 .enter-btn:hover{transform:scale(1.05)}
 .center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px;transition:opacity .5s ease,filter .5s ease}
 .center h1{font-size:72px;font-weight:900;background:linear-gradient(135deg,#50fa7b,#8be9fd,#bd93f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-2px;margin-bottom:16px}
@@ -27,17 +27,17 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .sponsor .label{font-size:12px;color:#6272a4;margin-bottom:12px}
 .sponsor-logos{display:flex;gap:20px;justify-content:center;align-items:center;flex-wrap:wrap;min-height:40px}
 .sponsor-logos .placeholder{color:#3a3a5a;font-size:12px}
-.loader-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;display:none;align-items:center;justify-content:center;pointer-events:none}
-.loader-overlay.show{display:flex}
-.loader-ring{width:90px;height:90px;position:relative}
-.loader-ring svg{width:100%;height:100%;animation:spin 1.2s linear infinite}
-.loader-ring circle{fill:none;stroke-width:6;stroke-linecap:round}
-.loader-ring .bg{stroke:#2a2a4a}
-.loader-ring .fg{stroke:url(#grad);stroke-dasharray:200;stroke-dashoffset:60;animation:dash 1.5s ease-in-out infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes dash{0%{stroke-dashoffset:180}50%{stroke-dashoffset:40}100%{stroke-dashoffset:180}}
-.loader-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;color:#8be9fd;white-space:nowrap}
-.center.fading{opacity:.15;filter:blur(4px)}
+/* 加载遮罩层 - 盖住所有内容，除了进入按钮 */
+.loader-mask{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(10,10,20,.4);backdrop-filter:blur(8px)}
+.loader-mask.show{display:flex}
+/* 圆环 */
+.loader-ring{width:140px;height:140px;position:relative}
+.loader-ring svg{width:100%;height:100%}
+.loader-ring circle{fill:none;stroke-linecap:round}
+.loader-ring .bg{stroke:#2a2a4a;stroke-width:5}
+.loader-ring .fg{stroke:url(#grad2);stroke-width:5;stroke-dasharray:251.2;stroke-dashoffset:251.2;transition:stroke-dashoffset .3s ease}
+.loader-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:15px;font-weight:700;color:#8be9fd;white-space:nowrap}
+.center.fading{opacity:.1;filter:blur(6px)}
 @media(max-width:600px){.center h1{font-size:44px}.topbar{padding:16px 20px}.features{grid-template-columns:1fr}}
 </style>
 </head>
@@ -84,19 +84,19 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
     </div>
   </div>
 </div>
-<div class="loader-overlay" id="loader">
+<div class="loader-mask" id="loader">
   <div class="loader-ring">
     <svg viewBox="0 0 100 100">
       <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#50fa7b"/>
           <stop offset="100%" stop-color="#8be9fd"/>
         </linearGradient>
       </defs>
       <circle class="bg" cx="50" cy="50" r="40"/>
-      <circle class="fg" cx="50" cy="50" r="40"/>
+      <circle class="fg" id="fgRing" cx="50" cy="50" r="40"/>
     </svg>
-    <div class="loader-text">正在加载中...</div>
+    <div class="loader-text" id="loaderText">加载中</div>
   </div>
 </div>
 <script>
@@ -104,42 +104,86 @@ const c=document.getElementById('c'),x=c.getContext('2d');
 let meteors=[];
 function rz(){c.width=innerWidth;c.height=innerHeight;meteors=[];spawn()}
 function spawn(){
-  // 从屏幕左侧外面发射，随机高度，角度44-46度
-  const angle=(44+Math.random()*2)*Math.PI/180; // 44-46度
+  // 随机从左侧或顶部发射
+  const fromLeft=Math.random()<0.6; // 60%从左侧，40%从顶部
+  let sx,sy,vx,vy;
+  if(fromLeft){
+    sx=-30;
+    sy=Math.random()*c.height*0.7;
+    const angle=(44+Math.random()*2)*Math.PI/180; // 44-46度
+    const speed=3+Math.random()*5; // 速度3-8
+    vx=Math.cos(angle)*speed;
+    vy=Math.sin(angle)*speed;
+  }else{
+    sx=Math.random()*c.width*0.8;
+    sy=-30;
+    const angle=(44+Math.random()*2)*Math.PI/180;
+    const speed=3+Math.random()*5;
+    vx=Math.cos(angle)*speed;
+    vy=Math.sin(angle)*speed;
+  }
+  const speed=Math.hypot(vx,vy);
   meteors.push({
-    x:-20, // 从屏幕左边外面开始
-    y:Math.random()*c.height*0.8, // 随机高度
-    vx:Math.cos(angle)*5, // 水平速度
-    vy:Math.sin(angle)*5, // 垂直速度（向下）
-    len:80+Math.random()*60, // 拖尾长度
+    x:sx,y:sy,vx:vx,vy:vy,
+    size:1+speed*0.3, // 快的大一点
+    tail:20+speed*12, // 快的尾巴长
     alpha:0.3+Math.random()*0.4
   });
-  setTimeout(spawn, 300+Math.random()*500); // 间隔发射
+  setTimeout(spawn, 200+Math.random()*600);
 }
 function dr(){
   x.clearRect(0,0,c.width,c.height);
-  meteors=meteors.filter(m=>m.x<c.width+200 && m.y<c.height+200); // 飞出屏幕移除
+  meteors=meteors.filter(m=>m.x<c.width+200&&m.y<c.height+200);
   meteors.forEach(m=>{
-    m.x+=m.vx;
-    m.y+=m.vy;
-    // 拖尾：从当前位置往反方向画渐变线
-    const g=x.createLinearGradient(m.x,m.y,m.x-m.vx/m.vy*40,m.y-40);
+    m.x+=m.vx;m.y+=m.vy;
+    const tx=m.x-m.vx/m.vy*m.tail;
+    const ty=m.y-m.tail;
+    const g=x.createLinearGradient(m.x,m.y,tx,ty);
     g.addColorStop(0,'rgba(139,242,253,'+m.alpha+')');
     g.addColorStop(1,'rgba(139,242,253,0)');
     x.strokeStyle=g;
-    x.lineWidth=1.5;
+    x.lineWidth=m.size;
     x.beginPath();
     x.moveTo(m.x,m.y);
-    x.lineTo(m.x-m.vx*8,m.y-m.vy*8);
+    x.lineTo(tx,ty);
     x.stroke();
   });
   requestAnimationFrame(dr);
 }
 rz();dr();addEventListener('resize',rz)
+
+// 圆环加载动画：两段交替跑
+const fg=document.getElementById('fgRing');
+const CIRC=251.2; // 2*PI*r=2*3.14*40
+let phase=0;
+let animTimer=null;
+function ringAnim(){
+  phase=(phase+1)%4;
+  // 四段：0-25%, 25-50%, 50-75%, 75-100%
+  // 每段跑一段弧然后停
+  const p=phase/4;
+  fg.style.strokeDashoffset=CIRC*(1-p*0.6); // 每段走60%的弧
+  animTimer=setTimeout(ringAnim,300);
+}
+
 function enter(){
   document.getElementById('mainContent').classList.add('fading');
   document.getElementById('loader').classList.add('show');
-  setTimeout(()=>{window.location.href='main.html'},1500);
+  ringAnim();
+  // 1.2秒后圆环填满
+  setTimeout(()=>{
+    clearTimeout(animTimer);
+    fg.style.strokeDashoffset=0; // 圆环填满
+    document.getElementById('loaderText').textContent='完成 ✓';
+    // 停留0.1秒
+    setTimeout(()=>{
+      // 0.01秒恢复前置页状态
+      document.getElementById('loader').classList.remove('show');
+      document.getElementById('mainContent').classList.remove('fading');
+      // 再0.09秒跳转
+      setTimeout(()=>{window.location.href='main.html'},90);
+    },100);
+  },1200);
 }
 </script>
 </body>
