@@ -10,100 +10,98 @@
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .topbar{background:rgba(20,20,35,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
 .topbar .logo{font-size:18px;font-weight:700;color:var(--green)}
-.topbar .right{display:flex;gap:12px;align-items:center}
-.user-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:20px;font-size:14px;cursor:pointer;transition:all .2s}
+.topbar .right{display:flex;gap:10px;align-items:center}
+.user-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:20px;font-size:14px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
 .user-btn:hover{border-color:var(--green)}
-.wrap{max-width:1100px;margin:0 auto;padding:30px 20px}
-.section-title{font-size:22px;font-weight:700;margin:30px 0 16px;color:var(--blue)}
-.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.promo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;text-decoration:none;color:var(--text);transition:all .3s;display:block}
-.promo-card:hover{border-color:var(--green);transform:translateY(-3px)}
-.promo-card .cat{font-size:12px;color:var(--gold);margin-bottom:8px}
-.promo-card h3{font-size:17px;margin-bottom:6px}
-.promo-card p{font-size:13px;color:var(--dim);line-height:1.5}
-.promo-card .go{display:inline-block;margin-top:10px;color:var(--green);font-size:13px}
-.ad-banner{background:linear-gradient(135deg,rgba(80,250,123,.08),rgba(139,242,253,.08));border:1px dashed var(--border);border-radius:14px;padding:30px;text-align:center;margin:20px 0}
-.ad-banner h3{color:var(--dim);font-size:16px}
-.ad-banner p{color:var(--dim);font-size:13px;margin-top:6px}
-.agent-card{background:linear-gradient(135deg,rgba(189,147,249,.1),rgba(80,250,123,.05));border:1px solid var(--purple);border-radius:14px;padding:22px}
-.agent-card h3{color:var(--purple);font-size:17px;margin-bottom:8px}
-.agent-card p{font-size:13px;color:var(--dim);line-height:1.6}
+.wrap{max-width:800px;margin:0 auto;padding:40px 20px}
+.hero{text-align:center;margin-bottom:40px}
+.hero h1{font-size:42px;font-weight:800;background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--dim);margin-top:10px;font-size:15px}
+.cards{display:flex;flex-direction:column;gap:16px}
+.big-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s;display:block}
+.big-card:hover{border-color:var(--green);transform:translateY(-3px)}
+.big-card .icon{font-size:32px;margin-bottom:12px}
+.big-card h3{font-size:20px;margin-bottom:6px}
+.big-card p{font-size:14px;color:var(--dim);line-height:1.6}
+.big-card .go{display:inline-block;margin-top:12px;color:var(--green);font-size:14px}
+.article-preview{margin-top:10px;padding-top:12px;border-top:1px solid var(--border)}
+.article-preview a{display:block;padding:6px 0;color:var(--blue);font-size:13px;text-decoration:none}
+.article-preview .more{color:var(--dim);font-size:12px;margin-top:8px;display:block}
 footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
-@media(max-width:600px){.promo-grid{grid-template-columns:1fr}.wrap{padding:20px 14px}}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="logo">CaesarBase</div>
   <div class="right">
-    <button class="user-btn" onclick="showLogin()">登录 / 注册</button>
+    <a class="user-btn" href="admin.html">Server后台</a>
   </div>
 </div>
 <div class="wrap">
+  <div class="hero">
+    <h1>CaesarBase</h1>
+    <p>个人主站 · 导流 · 社区 · 合作</p>
+  </div>
+  <div class="cards">
 
-  <div class="section-title">🚀 直达入口</div>
-  <div class="promo-grid">
-    <a class="promo-card" href="https://caesarpc.github.io">
-      <div class="cat">工具站</div>
+    <a class="big-card" href="https://caesarpc.github.io">
+      <div class="icon">🧰</div>
       <h3>Cr工具站</h3>
-      <p>域名查找、编码转换、文件转换、二维码、在线小游戏，全部免费使用。</p>
-      <span class="go">前往 →</span>
+      <p>域名查找、编码转换、文件转换、在线小游戏、技术文章，全部免费使用。</p>
+      <span class="go">进入工具站 →</span>
     </a>
-    <a class="promo-card" href="https://caesarpc.github.io/articles.html">
-      <div class="cat">文章</div>
-      <h3>技术文章库</h3>
-      <p>96篇深度技术文章，前端后端全栈，从入门到实战。</p>
-      <span class="go">阅读 →</span>
-    </a>
-    <a class="promo-card" href="https://caesarpc.github.io/games.html">
-      <div class="cat">娱乐</div>
-      <h3>在线小游戏</h3>
-      <p>贪吃蛇、俄罗斯方块、五子棋、扫雷，打开就玩。</p>
-      <span class="go">开始玩 →</span>
-    </a>
-  </div>
 
-  <div class="section-title">🤝 代理招商</div>
-  <div class="promo-grid">
-    <div class="agent-card">
-      <h3>📦 品牌导流合作位 A</h3>
-      <p>工具站+主站双站导流位，适合青少年体育、教育科技类品牌。联系站长洽谈。</p>
+    <div class="big-card" onclick="loadArticles()" style="cursor:default">
+      <div class="icon">📝</div>
+      <h3>技术文章</h3>
+      <p>同步Cr工具站最新技术文章。</p>
+      <div class="article-preview" id="articleList">
+        <span style="color:var(--dim);font-size:13px">加载中...</span>
+      </div>
+      <a class="go" href="https://caesarpc.github.io/articles.html" style="display:inline-block;margin-top:10px">想看更多文章？进入Cr工具站浏览全部 →</a>
     </div>
-    <div class="agent-card">
-      <h3>📦 品牌导流合作位 B</h3>
-      <p>首页横幅广告位，双站曝光，适合需要快速引流的品牌。</p>
-    </div>
-  </div>
 
-  <div class="ad-banner">
-    <h3>📢 广告位招商中</h3>
-    <p>主站首页横幅 + 工具站内嵌广告位 · 联系站长</p>
-  </div>
+    <a class="big-card" href="sponsor.html">
+      <div class="icon">📢</div>
+      <h3>品牌导流合作</h3>
+      <p>广告位招商、品牌导流合作，提交你的站点信息。</p>
+      <span class="go">填写合作申请 →</span>
+    </a>
 
-  <div class="section-title">🛠 快捷工具</div>
-  <div class="promo-grid">
-    <a class="promo-card" href="https://caesarpc.github.io/finder.html">
-      <div class="cat">工具</div>
-      <h3>域名查找器</h3>
-      <p>批量扫描域名是否已注册。</p>
-    </a>
-    <a class="promo-card" href="https://caesarpc.github.io/codec.html">
-      <div class="cat">工具</div>
-      <h3>编码工具箱</h3>
-      <p>Base64、URL、Unicode、哈希一键转换。</p>
-    </a>
-    <a class="promo-card" href="https://caesarpc.github.io/file-convert.html">
-      <div class="cat">工具</div>
-      <h3>文件转换</h3>
-      <p>图片格式、CSV转JSON等在线转换。</p>
-    </a>
   </div>
-
 </div>
-<footer>© 2026 CaesarBase · 导流 · 社区 · 代理</footer>
+<footer>© 2026 CaesarBase</footer>
 
 <script>
-function showLogin(){alert('登录功能开发中，即将上线（与Cr工具站账号互通）')}
+async function loadArticles(){
+  try{
+    const r=await fetch('https://caesarpc.github.io/articles.html?ts='+Date.now());
+    const html=await r.text();
+    const tmp=document.createElement('div');tmp.innerHTML=html;
+    const items=tmp.querySelectorAll('.article-item');
+    const box=document.getElementById('articleList');
+    box.innerHTML='';
+    let count=0;
+    items.forEach(it=>{
+      if(count>=5)return;
+      const h=it.querySelector('h3');
+      if(!h)return;
+      const onclick=it.getAttribute('onclick')||'';
+      const m=onclick.match(/location\.href='([^']+)'/);
+      if(m){
+        const a=document.createElement('a');
+        a.href='https://caesarpc.github.io/'+m[1];
+        a.textContent=h.textContent;
+        box.appendChild(a);
+        count++;
+      }
+    });
+    if(count===0)box.innerHTML='<span style="color:var(--dim);font-size:13px">暂无文章</span>';
+  }catch(e){
+    document.getElementById('articleList').innerHTML='<span style="color:var(--dim);font-size:13px">加载失败</span>';
+  }
+}
+loadArticles();
 </script>
 </body>
 </html>
