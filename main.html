@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CaesarBase — 主站</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f1a;--card:#1a1a2e;--border:#2a2a4a;--green:#50fa7b;--blue:#8be9fd;--purple:#bd93f9;--text:#e6e6f0;--dim:#6272a4;--gold:#ffd700}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topbar{background:rgba(20,20,35,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.topbar .logo{font-size:18px;font-weight:700;color:var(--green)}
+.topbar .right{display:flex;gap:12px;align-items:center}
+.user-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:20px;font-size:14px;cursor:pointer;transition:all .2s}
+.user-btn:hover{border-color:var(--green)}
+.wrap{max-width:1100px;margin:0 auto;padding:30px 20px}
+.section-title{font-size:22px;font-weight:700;margin:30px 0 16px;color:var(--blue)}
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.promo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;text-decoration:none;color:var(--text);transition:all .3s;display:block}
+.promo-card:hover{border-color:var(--green);transform:translateY(-3px)}
+.promo-card .cat{font-size:12px;color:var(--gold);margin-bottom:8px}
+.promo-card h3{font-size:17px;margin-bottom:6px}
+.promo-card p{font-size:13px;color:var(--dim);line-height:1.5}
+.promo-card .go{display:inline-block;margin-top:10px;color:var(--green);font-size:13px}
+.ad-banner{background:linear-gradient(135deg,rgba(80,250,123,.08),rgba(139,242,253,.08));border:1px dashed var(--border);border-radius:14px;padding:30px;text-align:center;margin:20px 0}
+.ad-banner h3{color:var(--dim);font-size:16px}
+.ad-banner p{color:var(--dim);font-size:13px;margin-top:6px}
+.agent-card{background:linear-gradient(135deg,rgba(189,147,249,.1),rgba(80,250,123,.05));border:1px solid var(--purple);border-radius:14px;padding:22px}
+.agent-card h3{color:var(--purple);font-size:17px;margin-bottom:8px}
+.agent-card p{font-size:13px;color:var(--dim);line-height:1.6}
+footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
+@media(max-width:600px){.promo-grid{grid-template-columns:1fr}.wrap{padding:20px 14px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">CaesarBase</div>
+  <div class="right">
+    <button class="user-btn" onclick="showLogin()">登录 / 注册</button>
+  </div>
+</div>
+<div class="wrap">
+
+  <div class="section-title">🚀 直达入口</div>
+  <div class="promo-grid">
+    <a class="promo-card" href="https://caesarpc.github.io">
+      <div class="cat">工具站</div>
+      <h3>Cr工具站</h3>
+      <p>域名查找、编码转换、文件转换、二维码、在线小游戏，全部免费使用。</p>
+      <span class="go">前往 →</span>
+    </a>
+    <a class="promo-card" href="https://caesarpc.github.io/articles.html">
+      <div class="cat">文章</div>
+      <h3>技术文章库</h3>
+      <p>96篇深度技术文章，前端后端全栈，从入门到实战。</p>
+      <span class="go">阅读 →</span>
+    </a>
+    <a class="promo-card" href="https://caesarpc.github.io/games.html">
+      <div class="cat">娱乐</div>
+      <h3>在线小游戏</h3>
+      <p>贪吃蛇、俄罗斯方块、五子棋、扫雷，打开就玩。</p>
+      <span class="go">开始玩 →</span>
+    </a>
+  </div>
+
+  <div class="section-title">🤝 代理招商</div>
+  <div class="promo-grid">
+    <div class="agent-card">
+      <h3>⚾ 青少年棒球装备代理</h3>
+      <p>福建/广东棒球品牌合作中，装备、球服、护具。主站用户专享折扣链接即将上线。</p>
+    </div>
+    <div class="agent-card">
+      <h3>📦 品牌导流合作位</h3>
+      <p>工具站+主站双站导流位招商中，适合青少年体育、教育科技类品牌。</p>
+    </div>
+  </div>
+
+  <div class="ad-banner">
+    <h3>📢 广告位招商中</h3>
+    <p>主站首页横幅 + 工具站内嵌广告位 · 联系站长</p>
+  </div>
+
+  <div class="section-title">🛠 快捷工具</div>
+  <div class="promo-grid">
+    <a class="promo-card" href="https://caesarpc.github.io/finder.html">
+      <div class="cat">工具</div>
+      <h3>域名查找器</h3>
+      <p>批量扫描域名是否已注册。</p>
+    </a>
+    <a class="promo-card" href="https://caesarpc.github.io/codec.html">
+      <div class="cat">工具</div>
+      <h3>编码工具箱</h3>
+      <p>Base64、URL、Unicode、哈希一键转换。</p>
+    </a>
+    <a class="promo-card" href="https://caesarpc.github.io/file-convert.html">
+      <div class="cat">工具</div>
+      <h3>文件转换</h3>
+      <p>图片格式、CSV转JSON等在线转换。</p>
+    </a>
+  </div>
+
+</div>
+<footer>© 2026 CaesarBase · 导流 · 社区 · 代理</footer>
+
+<script>
+function showLogin(){alert('登录功能开发中，即将上线（与Cr工具站账号互通）')}
+</script>
+</body>
+</html>
