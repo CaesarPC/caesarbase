@@ -6,17 +6,29 @@
 <title>CaesarBase</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:#0a0a14;color:#e6e6f0;min-height:100vh;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:#0a0a14;color:#e6e6f0;min-height:100vh;overflow:hidden;transition:all .6s ease}
+body.loading{filter:blur(8px);opacity:.3;transform:translateX(-40px)}
 canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:20px 32px}
 .topbar .logo{font-size:20px;font-weight:700;color:#50fa7b;letter-spacing:1px}
-.enter-btn{background:linear-gradient(135deg,#50fa7b,#8be9fd);color:#0a0a14;border:none;padding:10px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s;text-decoration:none}
+.enter-btn{background:linear-gradient(135deg,#50fa7b,#8be9fd);color:#0a0a14;border:none;padding:10px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s}
 .enter-btn:hover{transform:scale(1.05)}
-.center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px}
+.center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px;transition:all .6s ease}
 .center h1{font-size:72px;font-weight:900;background:linear-gradient(135deg,#50fa7b,#8be9fd,#bd93f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-2px;margin-bottom:16px}
 .center .sub{font-size:18px;color:#6272a4;margin-bottom:8px}
 .center .tags{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .center .tags span{padding:6px 16px;border:1px solid #2a2a4a;border-radius:20px;font-size:13px;color:#8be9fd}
+/* 加载动画 */
+.loader-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(10,10,20,.5);backdrop-filter:blur(12px)}
+.loader-overlay.show{display:flex}
+.loader-ring{width:100px;height:100px;position:relative}
+.loader-ring svg{width:100%;height:100%;animation:spin 1.2s linear infinite}
+.loader-ring circle{fill:none;stroke-width:6;stroke-linecap:round}
+.loader-ring .bg{stroke:#2a2a4a}
+.loader-ring .fg{stroke:url(#grad);stroke-dasharray:200;stroke-dashoffset:60;animation:dash 1.5s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes dash{0%{stroke-dashoffset:180}50%{stroke-dashoffset:40}100%{stroke-dashoffset:180}}
+.loader-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:#8be9fd;white-space:nowrap}
 @media(max-width:600px){.center h1{font-size:44px}.topbar{padding:16px 20px}}
 </style>
 </head>
@@ -24,9 +36,9 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 <canvas id="c"></canvas>
 <div class="topbar">
   <div class="logo">CB</div>
-  <a class="enter-btn" href="main.html">进入 →</a>
+  <button class="enter-btn" onclick="enter()">进入 →</button>
 </div>
-<div class="center">
+<div class="center" id="mainContent">
   <h1>CaesarBase</h1>
   <div class="sub">工具 · 社区 · 导流 · 代理</div>
   <div class="tags">
@@ -36,12 +48,33 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
     <span>⚾ 青少年棒球</span>
   </div>
 </div>
+<!-- 加载动画 -->
+<div class="loader-overlay" id="loader">
+  <div class="loader-ring">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#50fa7b"/>
+          <stop offset="100%" stop-color="#8be9fd"/>
+        </linearGradient>
+      </defs>
+      <circle class="bg" cx="50" cy="50" r="40"/>
+      <circle class="fg" cx="50" cy="50" r="40"/>
+    </svg>
+    <div class="loader-text">正在加载中...</div>
+  </div>
+</div>
 <script>
 const c=document.getElementById('c'),x=c.getContext('2d');
 let s=[];
 function rz(){c.width=innerWidth;c.height=innerHeight;s=[];for(let i=0;i<100;i++)s.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*2,vy:Math.random()*1.5+.5,l:Math.random()*60+20,a:Math.random()*.4+.15})}
-function dr(){x.clearRect(0,0,c.width,c.height);s.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y>c.height+50){p.y=-50;p.x=Math.random()*c.width}const g=x.createLinearGradient(p.x,p.y,p.x-p.vx*p.l,p.y-p.vy*p.l);g.addColorStop(0,`rgba(139,242,253,${p.a})`);g.addColorStop(1,'rgba(139,242,253,0)');x.strokeStyle=g;x.lineWidth=1.5;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x-p.vx*p.l,p.y-p.vy*p.l);x.stroke()});requestAnimationFrame(dr)}
+function dr(){x.clearRect(0,0,c.width,c.height);s.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y>c.height+50){p.y=-50;p.x=Math.random()*c.width}const g=x.createLinearGradient(p.x,p.y,p.x-p.vx*p.l,p.y-p.vy*p.l);g.addColorStop(0,`rgba(139,242,253,${p.a})`);g.addColorStop(1,'rgba(139,242,253,0)');x.strokeStyle=g;x.lineWidth=1.5;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x-p.vx*p.l,p.y-p.vy*s.vy*s.l);x.stroke()});requestAnimationFrame(dr)}
 rz();dr();addEventListener('resize',rz)
+function enter(){
+  document.body.classList.add('loading');
+  document.getElementById('loader').classList.add('show');
+  setTimeout(()=>{window.location.href='main.html'},1500);
+}
 </script>
 </body>
 </html>
