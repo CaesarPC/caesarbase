@@ -123,36 +123,24 @@ function draw(){
 }
 resize();spawn();draw();addEventListener('resize',resize);
 
-// 加载文章列表（只显示标题，不链接到工具站文章页）
-async function loadArticles(){
-  try{
-    const r=await fetch('https://caesarpc.github.io/articles.html?ts='+Date.now());
-    const html=await r.text();
-    const tmp=document.createElement('div');tmp.innerHTML=html;
-    const items=tmp.querySelectorAll('.article-item');
-    const box=document.getElementById('articleList');
-    box.innerHTML='';
-    let count=0;
-    items.forEach(it=>{
-      if(count>=5)return;
-      const h3=it.querySelector('h3');
-      const onclick=it.getAttribute('onclick');
-      if(h3&&onclick){
-        const m=onclick.match(/location\.href='([^']+)'/);
-        if(m){
-          const a=document.createElement('a');
-          a.className='art-item';
-          a.href='https://caesarpc.github.io/'+m[1]+'?from=cb';
-          a.textContent='📄 '+h3.textContent.trim();
-          box.appendChild(a);
-          count++;
-        }
-      }
-    });
-    if(count===0)box.innerHTML='<span style="color:var(--dim);font-size:13px">暂无文章</span>';
-  }catch(e){
-    document.getElementById('articleList').innerHTML='<span style="color:var(--dim);font-size:13px">加载失败</span>';
-  }
+// 5篇独立文章（CaesarBase自己的页面，返回主站）
+const cbArticles=[
+  {url:'cb-article-tech-ai-agent-dev-intro.html',title:'AI Agent智能体开发入门'},
+  {url:'cb-article-tech-graphql-api.html',title:'GraphQL API设计'},
+  {url:'cb-article-tech-distributed-lock.html',title:'分布式锁实现方案'},
+  {url:'cb-article-tech-db-sharding-practice.html',title:'分库分表实战'},
+  {url:'cb-article-tech-rw-split-ha.html',title:'读写分离与数据库高可用'}
+];
+function loadArticles(){
+  const box=document.getElementById('articleList');
+  box.innerHTML='';
+  cbArticles.forEach(a=>{
+    const el=document.createElement('a');
+    el.className='art-item';
+    el.href=a.url;
+    el.textContent='📄 '+a.title;
+    box.appendChild(el);
+  });
 }
 loadArticles();
 
