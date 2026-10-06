@@ -11,7 +11,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",s
 .topbar{background:rgba(20,20,35,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
 .topbar .logo{font-size:18px;font-weight:700;color:var(--green)}
 .topbar .right{display:flex;gap:10px;align-items:center}
-.user-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:20px;font-size:14px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.user-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:20px;font-size:14px;cursor:pointer;transition:all .2s}
 .user-btn:hover{border-color:var(--green)}
 .wrap{max-width:800px;margin:0 auto;padding:40px 20px}
 .hero{text-align:center;margin-bottom:40px}
@@ -27,14 +27,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",s
 .article-preview{margin-top:10px;padding-top:12px;border-top:1px solid var(--border)}
 .article-preview a{display:block;padding:6px 0;color:var(--blue);font-size:13px;text-decoration:none}
 .article-preview .more{color:var(--dim);font-size:12px;margin-top:8px;display:block}
+.admin-card{border-color:var(--gold)}
+.admin-card .icon{color:var(--gold)}
+.admin-card h3{color:var(--gold)}
+.crown{color:var(--gold);margin-left:6px}
 footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
+/* 登录弹窗 */
+.login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
+.login-modal.show{display:flex}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;width:320px}
+.login-box h3{margin-bottom:16px;text-align:center}
+.login-box input{width:100%;background:#0f0f1a;border:1px solid var(--border);border-radius:8px;padding:12px;margin:6px 0;color:var(--text)}
+.login-box button{width:100%;background:linear-gradient(135deg,var(--green),var(--blue));color:#0f0f1a;border:none;padding:12px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:10px}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="logo">CaesarBase</div>
   <div class="right">
-    <a class="user-btn" href="admin.html">Server后台</a>
+    <span id="userInfo" style="display:none;font-size:14px">游客</span>
+    <button class="user-btn" id="loginBtn" onclick="showLogin()">登录</button>
   </div>
 </div>
 <div class="wrap">
@@ -42,16 +54,14 @@ footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
     <h1>CaesarBase</h1>
     <p>个人主站 · 导流 · 社区 · 合作</p>
   </div>
-  <div class="cards">
-
+  <div class="cards" id="cardBox">
     <a class="big-card" href="https://caesarpc.github.io/welcome.html">
       <div class="icon">🧰</div>
       <h3>Cr工具站</h3>
       <p>域名查找、编码转换、文件转换、在线小游戏、技术文章，全部免费使用。</p>
       <span class="go">进入工具站 →</span>
     </a>
-
-    <div class="big-card" onclick="loadArticles()" style="cursor:default">
+    <div class="big-card">
       <div class="icon">📝</div>
       <h3>技术文章</h3>
       <p>同步Cr工具站最新技术文章。</p>
@@ -60,17 +70,26 @@ footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
       </div>
       <a class="go" href="https://caesarpc.github.io/articles.html" style="display:inline-block;margin-top:10px">想看更多文章？进入Cr工具站浏览全部 →</a>
     </div>
-
     <a class="big-card" href="sponsor.html">
       <div class="icon">📢</div>
       <h3>品牌导流合作</h3>
       <p>广告位招商、品牌导流合作，提交你的站点信息。</p>
       <span class="go">填写合作申请 →</span>
     </a>
-
   </div>
 </div>
 <footer>© 2026 CaesarBase</footer>
+
+<!-- 登录弹窗 -->
+<div class="login-modal" id="loginModal">
+  <div class="login-box">
+    <h3>登录 CaesarBase</h3>
+    <input type="text" id="loginUser" placeholder="用户名">
+    <input type="password" id="loginPwd" placeholder="密码">
+    <button onclick="doLogin()">登录</button>
+    <button style="background:transparent;border:1px solid var(--border);color:var(--dim)" onclick="closeLogin()">取消</button>
+  </div>
+</div>
 
 <script>
 async function loadArticles(){
@@ -102,6 +121,51 @@ async function loadArticles(){
   }
 }
 loadArticles();
+
+function showLogin(){document.getElementById('loginModal').classList.add('show')}
+function closeLogin(){document.getElementById('loginModal').classList.remove('show')}
+function doLogin(){
+  const u=document.getElementById('loginUser').value;
+  const p=document.getElementById('loginPwd').value;
+  if(!u||!p){alert('请输入用户名和密码');return}
+  // 简单判断Server账号
+  if(u==='Server'&&p==='314314314'){
+    sessionStorage.setItem('cb_user','Server');
+    onLogin('Server');
+  }else if(u==='67'&&p==='67'){
+    sessionStorage.setItem('cb_user','67');
+    onLogin('67');
+  }else{
+    alert('账号或密码错误');
+  }
+  closeLogin();
+}
+function onLogin(name){
+  document.getElementById('userInfo').style.display='inline';
+  const btn=document.getElementById('loginBtn');
+  if(name==='Server'){
+    document.getElementById('userInfo').innerHTML='Server <span class="crown">👑</span>';
+    btn.textContent='退出';
+    btn.onclick=logout;
+    // 加后台卡片
+    const card=document.createElement('a');
+    card.className='big-card admin-card';
+    card.href='admin.html';
+    card.innerHTML='<div class="icon">👑</div><h3>进入后台</h3><p>Server管理员后台管理面板</p><span class="go">打开后台 →</span>';
+    document.getElementById('cardBox').appendChild(card);
+  }else{
+    document.getElementById('userInfo').textContent=name;
+    btn.textContent='退出';
+    btn.onclick=logout;
+  }
+}
+function logout(){
+  sessionStorage.removeItem('cb_user');
+  location.reload();
+}
+// 页面加载时检查登录状态
+const saved=sessionStorage.getItem('cb_user');
+if(saved)onLogin(saved);
 </script>
 </body>
 </html>
