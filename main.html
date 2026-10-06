@@ -3,36 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaesarBase — 主站</title>
+<title>CaesarBase</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f0f1a;--card:#1a1a2e;--border:#2a2a4a;--green:#50fa7b;--blue:#8be9fd;--purple:#bd93f9;--text:#e6e6f0;--dim:#6272a4;--gold:#ffd700}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .topbar{background:rgba(20,20,35,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-.topbar .logo{font-size:18px;font-weight:700;color:var(--green)}
+.topbar .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#50fa7b,#8be9fd,#bd93f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .topbar .right{display:flex;gap:10px;align-items:center}
 .user-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:20px;font-size:14px;cursor:pointer;transition:all .2s}
 .user-btn:hover{border-color:var(--green)}
-.wrap{max-width:800px;margin:0 auto;padding:40px 20px}
+.wrap{max-width:800px;margin:0 auto;padding:40px 20px;position:relative;z-index:1}
 .hero{text-align:center;margin-bottom:40px}
-.hero h1{font-size:42px;font-weight:800;background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero h1{font-size:48px;font-weight:900;background:linear-gradient(135deg,#50fa7b 0%,#8be9fd 50%,#bd93f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
 .hero p{color:var(--dim);margin-top:10px;font-size:15px}
 .cards{display:flex;flex-direction:column;gap:16px}
-.big-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s;display:block}
+.big-card{background:rgba(26,26,46,.85);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s;display:block}
 .big-card:hover{border-color:var(--green);transform:translateY(-3px)}
 .big-card .icon{font-size:32px;margin-bottom:12px}
 .big-card h3{font-size:20px;margin-bottom:6px}
 .big-card p{font-size:14px;color:var(--dim);line-height:1.6}
 .big-card .go{display:inline-block;margin-top:12px;color:var(--green);font-size:14px}
 .article-preview{margin-top:10px;padding-top:12px;border-top:1px solid var(--border)}
-.article-preview a{display:block;padding:6px 0;color:var(--blue);font-size:13px;text-decoration:none}
-.article-preview .more{color:var(--dim);font-size:12px;margin-top:8px;display:block}
+.article-preview .art-item{display:block;padding:5px 0;color:var(--blue);font-size:13px;text-decoration:none}
+.article-preview .more{color:var(--dim);font-size:12px;margin-top:8px;display:block;text-decoration:none}
+.article-preview .more:hover{color:var(--green)}
 .admin-card{border-color:var(--gold)}
 .admin-card .icon{color:var(--gold)}
 .admin-card h3{color:var(--gold)}
 .crown{color:var(--gold);margin-left:6px}
-footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
-/* 登录弹窗 */
+footer{text-align:center;padding:30px;color:var(--dim);font-size:12px;position:relative;z-index:1}
 .login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
 .login-modal.show{display:flex}
 .login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;width:320px}
@@ -42,6 +43,7 @@ footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
 </style>
 </head>
 <body>
+<canvas id="mc"></canvas>
 <div class="topbar">
   <div class="logo">CaesarBase</div>
   <div class="right">
@@ -68,7 +70,7 @@ footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
       <div class="article-preview" id="articleList">
         <span style="color:var(--dim);font-size:13px">加载中...</span>
       </div>
-      <a class="go" href="https://caesarpc.github.io/articles.html" style="display:inline-block;margin-top:10px">想看更多文章？进入Cr工具站浏览全部 →</a>
+      <a class="more" href="https://caesarpc.github.io/articles.html">想看更多文章？进入Cr工具站浏览全部 →</a>
     </div>
     <a class="big-card" href="sponsor.html">
       <div class="icon">📢</div>
@@ -78,9 +80,8 @@ footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
     </a>
   </div>
 </div>
-<footer>© 2026 CaesarBase</footer>
+<footer>© 2026 CaesarBase · alpha 1.1</footer>
 
-<!-- 登录弹窗 -->
 <div class="login-modal" id="loginModal">
   <div class="login-box">
     <h3>登录 CaesarBase</h3>
@@ -92,6 +93,37 @@ footer{text-align:center;padding:30px;color:var(--dim);font-size:12px}
 </div>
 
 <script>
+// 流星背景
+const c=document.getElementById('mc'),x=c.getContext('2d');
+let meteors=[];
+function resize(){c.width=innerWidth;c.height=innerHeight}
+function spawn(){
+  const fromLeft=Math.random()<0.6;
+  let sx,sy,vx,vy;
+  if(fromLeft){sx=-30;sy=Math.random()*c.height*0.7;}
+  else{sx=Math.random()*c.width*0.8;sy=-30;}
+  const angle=(44+Math.random()*2)*Math.PI/180;
+  const speed=3+Math.random()*5;
+  vx=Math.cos(angle)*speed;vy=Math.sin(angle)*speed;
+  meteors.push({x:sx,y:sy,vx:vx,vy:vy,size:1+speed*0.3,tail:20+speed*12,alpha:0.2+Math.random()*0.3});
+  setTimeout(spawn,200+Math.random()*400);
+}
+function draw(){
+  x.clearRect(0,0,c.width,c.height);
+  meteors=meteors.filter(m=>m.x<c.width+200&&m.y<c.height+200);
+  meteors.forEach(m=>{
+    m.x+=m.vx;m.y+=m.vy;
+    const g=x.createLinearGradient(m.x,m.y,m.x-m.vx/m.vy*m.tail,m.y-m.tail);
+    g.addColorStop(0,'rgba(139,242,253,'+m.alpha+')');
+    g.addColorStop(1,'rgba(139,242,253,0)');
+    x.strokeStyle=g;x.lineWidth=m.size;
+    x.beginPath();x.moveTo(m.x,m.y);x.lineTo(m.x-m.vx/m.vy*m.tail,m.y-m.tail);x.stroke();
+  });
+  requestAnimationFrame(draw);
+}
+resize();spawn();draw();addEventListener('resize',resize);
+
+// 加载文章列表（只显示标题，不链接到工具站文章页）
 async function loadArticles(){
   try{
     const r=await fetch('https://caesarpc.github.io/articles.html?ts='+Date.now());
@@ -103,15 +135,12 @@ async function loadArticles(){
     let count=0;
     items.forEach(it=>{
       if(count>=5)return;
-      const h=it.querySelector('h3');
-      if(!h)return;
-      const onclick=it.getAttribute('onclick')||'';
-      const m=onclick.match(/location\.href='([^']+)'/);
-      if(m){
-        const a=document.createElement('a');
-        a.href='https://caesarpc.github.io/'+m[1];
-        a.textContent=h.textContent;
-        box.appendChild(a);
+      const h3=it.querySelector('h3');
+      if(h3){
+        const s=document.createElement('span');
+        s.className='art-item';
+        s.textContent='📄 '+h3.textContent.trim();
+        box.appendChild(s);
         count++;
       }
     });
@@ -122,50 +151,39 @@ async function loadArticles(){
 }
 loadArticles();
 
+// 登录
 function showLogin(){document.getElementById('loginModal').classList.add('show')}
 function closeLogin(){document.getElementById('loginModal').classList.remove('show')}
 function doLogin(){
   const u=document.getElementById('loginUser').value;
   const p=document.getElementById('loginPwd').value;
-  if(!u||!p){alert('请输入用户名和密码');return}
-  // 简单判断Server账号
   if(u==='Server'&&p==='314314314'){
     sessionStorage.setItem('cb_user','Server');
-    onLogin('Server');
+    sessionStorage.setItem('cb_admin','true');
+    location.reload();
   }else if(u==='67'&&p==='67'){
     sessionStorage.setItem('cb_user','67');
-    onLogin('67');
+    sessionStorage.setItem('cb_mod','true');
+    location.reload();
   }else{
-    alert('账号或密码错误');
+    alert('用户名或密码错误');
   }
-  closeLogin();
 }
-function onLogin(name){
+const cu=sessionStorage.getItem('cb_user');
+if(cu){
+  document.getElementById('userInfo').textContent=cu==='Server'?'Server 👑':cu;
   document.getElementById('userInfo').style.display='inline';
-  const btn=document.getElementById('loginBtn');
-  if(name==='Server'){
-    document.getElementById('userInfo').innerHTML='Server <span class="crown">👑</span>';
-    btn.textContent='退出';
-    btn.onclick=logout;
-    // 加后台卡片
-    const card=document.createElement('a');
-    card.className='big-card admin-card';
-    card.href='admin.html';
-    card.innerHTML='<div class="icon">👑</div><h3>进入后台</h3><p>Server管理员后台管理面板</p><span class="go">打开后台 →</span>';
-    document.getElementById('cardBox').appendChild(card);
-  }else{
-    document.getElementById('userInfo').textContent=name;
-    btn.textContent='退出';
-    btn.onclick=logout;
+  document.getElementById('loginBtn').textContent='退出';
+  document.getElementById('loginBtn').onclick=()=>{sessionStorage.clear();location.reload()};
+  if(sessionStorage.getItem('cb_admin')){
+    const box=document.getElementById('cardBox');
+    const ac=document.createElement('a');
+    ac.className='big-card admin-card';
+    ac.href='admin.html';
+    ac.innerHTML='<div class="icon">👑</div><h3>进入后台</h3><p>Server专属后台管理</p><span class="go">打开后台 →</span>';
+    box.appendChild(ac);
   }
 }
-function logout(){
-  sessionStorage.removeItem('cb_user');
-  location.reload();
-}
-// 页面加载时检查登录状态
-const saved=sessionStorage.getItem('cb_user');
-if(saved)onLogin(saved);
 </script>
 </body>
 </html>
