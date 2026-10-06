@@ -136,12 +136,17 @@ async function loadArticles(){
     items.forEach(it=>{
       if(count>=5)return;
       const h3=it.querySelector('h3');
-      if(h3){
-        const s=document.createElement('span');
-        s.className='art-item';
-        s.textContent='📄 '+h3.textContent.trim();
-        box.appendChild(s);
-        count++;
+      const onclick=it.getAttribute('onclick');
+      if(h3&&onclick){
+        const m=onclick.match(/location\.href='([^']+)'/);
+        if(m){
+          const a=document.createElement('a');
+          a.className='art-item';
+          a.href='https://caesarpc.github.io/'+m[1]+'?from=cb';
+          a.textContent='📄 '+h3.textContent.trim();
+          box.appendChild(a);
+          count++;
+        }
       }
     });
     if(count===0)box.innerHTML='<span style="color:var(--dim);font-size:13px">暂无文章</span>';
